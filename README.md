@@ -2,7 +2,7 @@
 
 ## 项目功能 
 
-支持 + - $\times$ mod xor gcd sin 七种运算, 其中 + - $\times$ `mod` `sin` 支持小数运算, `xor` `gcd` 仅支持整数运算, 输入小数将会报错.
+支持 + - $\times$ `mod` `xor` `gcd` `sin` 七种运算, 其中 + - $\times$ `mod` `sin` 支持小数运算, `xor` `gcd` 仅支持整数运算, 输入小数将会报错.
 
 支持查看运算历史记录.
 
