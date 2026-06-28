@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>四则运算 - 在线计算器</title>
+    <title>多功能计算器 - 在线评测</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -64,16 +64,18 @@
 </head>
 <body>
     <div class="container">
-        <h1>四则运算计算器</h1>
-        <p class="subtitle">选择运算类型，输入两个整数，计算结果</p>
+        <h1>多功能计算器</h1>
+        <p class="subtitle">支持加、减、乘、除、取模、异或、最大公因数</p>
 
         <div class="input-row">
             <input type="number" id="numA" placeholder="a" autofocus>
             <select id="operator">
-                <option value="add">+</option>
-                <option value="sub">−</option>
-                <option value="mul">×</option>
-                <option value="mod">%</option>
+                <option value="add">+ (加)</option>
+                <option value="sub">− (减)</option>
+                <option value="mul">× (乘)</option>
+                <option value="mod">% (取模)</option>
+                <option value="xor">⊕ (异或)</option>
+                <option value="gcd">gcd (最大公因数)</option>
             </select>
             <input type="number" id="numB" placeholder="b">
         </div>
@@ -87,7 +89,6 @@
     </div>
 
     <script>
-        // 根据用户选择的运算类型，调用不同的 API
         async function callBackend(op, a, b) {
             const response = await fetch(`http://localhost:8080/api/${op}?a=${a}&b=${b}`);
             const data = await response.json();
@@ -107,7 +108,7 @@
             const b = inputB.value.trim();
             const op = operator.value;
 
-            const opSymbols = { add: '+', sub: '−', mul: '×', mod: '%' };
+            const opSymbols = { add: '+', sub: '−', mul: '×', mod: '%', xor: '⊕', gcd: 'gcd' };
             const opSymbol = opSymbols[op];
 
             if (a === '' || b === '') {
@@ -143,7 +144,6 @@
             }
         }
 
-        // 支持回车提交
         document.getElementById('numB').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') calculate();
         });
