@@ -1,34 +1,10 @@
-#include <iostream>
+#include "routes.h"
+#include "utils.h"
 #include <string>
 #include <algorithm>
 #include <cmath>
-#include <sstream>
-#include <iomanip>
-#include "httplib.h"
 
-std::string limit_double(double num){
-    std::ostringstream oss;
-    oss << std::fixed << std::setprecision(6) << num;
-    return oss.str();
-}
-
-bool is_int(std::string str){
-    double a = std::stod(str);
-    long long c = std::stoll(str);
-    if((double)c == a) return true;
-    else return false;
-}
-
-int main() {
-    httplib::Server svr;
-
-    // 允许跨域
-    svr.set_pre_routing_handler([](const httplib::Request&, httplib::Response& res) {
-        res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_header("Access-Control-Allow-Headers", "Content-Type");
-        return httplib::Server::HandlerResponse::Unhandled;
-    });
-
+void register_routes(httplib::Server& svr) {
     // 加法
     svr.Get("/api/add", [](const httplib::Request& req, httplib::Response& res) {
         try {
@@ -143,8 +119,4 @@ int main() {
         }
     });
 
-    std::cout << "C++ server running at http://localhost:8080" << std::endl;
-    svr.listen("0.0.0.0", 8080);
-
-    return 0;
 }
