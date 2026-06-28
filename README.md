@@ -8,12 +8,15 @@
 
 ## 使用方法
 
-1. 下载 `httplib` 库 (文件 `httplib.h`);
+1. 直接打包这个项目中的所有文件;
 
-2. 下载 `server.cpp` 并编译: **Windows**: `g++ -std=c++17 -pthread -D_WIN32_WINNT=0x0A00 server.cpp -o server.exe -lws2_32`  **Linux**: `g++ -std=c++17 -pthread server.cpp -o server`
+2. 确保有 `CMake` 3.10 以上版本;
 
-3. 下载 `index.html` 前端文件;
+3. 编译: 在文件夹 cmd 中, 输入:
 
-4. 确保这些文件在同一文件夹里;
+`mkdir build && cd build
+cmake ..
+make
+./server`
 
-5. 编译后的 server 文件运行, 可以打开前端网页进行计算.
+后台不要关闭, 浏览器打开 `www/index.html`, 即可使用.
