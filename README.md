@@ -12,11 +12,14 @@
 
 2. 确保有 `CMake` 3.10 以上版本;
 
-3. 编译: 在文件夹 cmd 中, 输入:
+3. 编译: 在文件夹 `cmd` 中, 输入:
 
-`mkdir build && cd build
-cmake ..
-make
-./server`
+`mkdir build && cd build`
+
+`cmake ..`
+
+`make`
+
+`./server`
 
 后台不要关闭, 浏览器打开 `www/index.html`, 即可使用.
