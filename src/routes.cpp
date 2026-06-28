@@ -14,7 +14,7 @@ void register_routes(httplib::Server& svr) {
             res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
         } catch (...) {
             res.status = 400;
-            res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+            res.set_content("{\"error\":\"服务器状态错误\"}", "application/json");
         }
     });
 
@@ -27,7 +27,7 @@ void register_routes(httplib::Server& svr) {
             res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
         } catch (...) {
             res.status = 400;
-            res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+            res.set_content("{\"error\":\"服务器状态错误\"}", "application/json");
         }
     });
 
@@ -40,7 +40,7 @@ void register_routes(httplib::Server& svr) {
             res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
         } catch (...) {
             res.status = 400;
-            res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+            res.set_content("{\"error\":\"服务器状态错误\"}", "application/json");
         }
     });
 
@@ -51,14 +51,14 @@ void register_routes(httplib::Server& svr) {
             double b = std::stod(req.get_param_value("b"));
             if (b == 0) {
                 res.status = 400;
-                res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+                res.set_content("{\"error\":\"除数不能为 0\"}", "application/json");
                 return;
             }
             double result = std::fmod(a, b);
             res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
         } catch (...) {
             res.status = 400;
-            res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+            res.set_content("{\"error\":\"服务器状态错误\"}", "application/json");
         }
     });
 
@@ -67,9 +67,9 @@ void register_routes(httplib::Server& svr) {
         try {
             std::string str_a = req.get_param_value("a");
             std::string str_b = req.get_param_value("b");
-            if(!is_int(str_a) || !is_int(str_b)){
+            if(!is_int(str_a) || !is_int(str_b)) {
                 res.status = 400;
-                res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+                res.set_content("{\"error\":\"您输入的数字不是整数\"}", "application/json");
                 return;
             }
             long long a = std::stoll(str_a);
@@ -78,7 +78,7 @@ void register_routes(httplib::Server& svr) {
             res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
         } catch (...) {
             res.status = 400;
-            res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+            res.set_content("{\"error\":\"服务器状态错误\"}", "application/json");
         }
     });
 
@@ -87,23 +87,23 @@ void register_routes(httplib::Server& svr) {
         try {
             std::string str_a = req.get_param_value("a");
             std::string str_b = req.get_param_value("b");
-            if(!is_int(str_a) || !is_int(str_b)){
+            if(!is_int(str_a) || !is_int(str_b)) {
                 res.status = 400;
-                res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+                res.set_content("{\"error\":\"您输入的数字不是整数\"}", "application/json");
                 return;
             }
             long long a = std::stoll(str_a);
             long long b = std::stoll(str_b);
             if (a == 0 && b == 0) {
                 res.status = 400;
-                res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+                res.set_content("{\"error\":\"您输入的数字不合法\"}", "application/json");
                 return;
             }
             long long result = std::gcd(a,b);
             res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
         } catch (...) {
             res.status = 400;
-            res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+            res.set_content("{\"error\":\"服务器状态错误\"}", "application/json");
         }
     });
 
@@ -115,8 +115,39 @@ void register_routes(httplib::Server& svr) {
             res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
         } catch (...) {
             res.status = 400;
-            res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+            res.set_content("{\"error\":\"服务器状态错误\"}", "application/json");
         }
     });
 
+    //余弦函数
+    svr.Get("/api/cos", [](const httplib::Request& req, httplib::Response& res) {
+        try {
+            double a = std::stod(req.get_param_value("a"));
+            double result = std::cos(a);
+            res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
+        } catch (...) {
+            res.status = 400;
+            res.set_content("{\"error\":\"服务器状态错误\"}", "application/json");
+        }
+    });
+
+    //或运算
+    svr.Get("/api/or",[](const httplib::Request& req, httplib::Response& res) {
+        try {
+            std::string str_a = req.get_param_value("a");
+            std::string str_b = req.get_param_value("b");
+            if(!is_int(str_a) || !is_int(str_b)) {
+                res.status = 400;
+                res.set_content("{\"error\":\"您输入的数字不是整数\"}", "application/json");
+                return;
+            }
+            long long a = std::stoll(str_a);
+            long long b = std::stoll(str_b);
+            long long result = a | b ;
+            res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
+        } catch(...) {
+            res.status = 400;
+            res.set_content("{\"error\":\"服务器状态错误\"}", "application/json");
+        }
+    });
 }

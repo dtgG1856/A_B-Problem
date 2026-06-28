@@ -90,7 +90,7 @@
 <body>
     <div class="container">
         <h1>多功能计算器</h1>
-        <p class="subtitle">加·减·乘·取模·异或·最大公因数·正弦</p>
+        <p class="subtitle">加·减·乘·取模·异或·按位或·最大公因数·正弦·余弦</p>
 
         <div class="input-row">
             <input type="number" id="numA" placeholder="数字 a" autofocus>
@@ -102,6 +102,8 @@
                 <option value="xor">⊕ 异或</option>
                 <option value="gcd">gcd 最大公因数</option>
                 <option value="sin">sin 正弦</option>
+                <option value="cos">cos 余弦</option>
+                <option value="or">| 按位或</option>
             </select>
             <input type="number" id="numB" placeholder="数字 b">
         </div>
@@ -123,15 +125,13 @@
     </div>
 
     <script>
-        // 历史记录（最多保存10条）
         const MAX_HISTORY = 10;
         let history = JSON.parse(localStorage.getItem('calc_history') || '[]');
 
-        // 渲染历史记录
         function renderHistory() {
             const list = document.getElementById('historyList');
             list.innerHTML = '';
-            history.slice().reverse().forEach((item, idx) => {
+            history.slice().reverse().forEach((item) => {
                 const li = document.createElement('li');
                 li.innerHTML = `<span class="history-expr">${item.expr}</span><span class="history-result">= ${item.result}</span>`;
                 li.onclick = () => loadHistoryItem(item);
@@ -140,15 +140,14 @@
             localStorage.setItem('calc_history', JSON.stringify(history));
         }
 
-        // 加载历史记录到输入框
         function loadHistoryItem(item) {
             document.getElementById('operator').value = item.op;
             document.getElementById('numA').value = item.a;
             if (item.b !== undefined && item.b !== null) {
                 document.getElementById('numB').value = item.b;
             }
-            toggleParamB(); // 根据运算类型调整输入框
-            calculate(); // 自动重新计算
+            toggleParamB();
+            calculate();
         }
 
         function clearHistory() {
@@ -157,20 +156,18 @@
             renderHistory();
         }
 
-        // 添加历史
         function addHistory(op, a, b, result) {
-            const opSymbols = { add:'+', sub:'−', mul:'×', mod:'%', xor:'⊕', gcd:'gcd', sin:'sin' };
-            const expr = op === 'sin' ? `sin(${a})` : `${a} ${opSymbols[op]} ${b}`;
+            const opSymbols = { add:'+', sub:'−', mul:'×', mod:'%', xor:'⊕', gcd:'gcd', sin:'sin', cos:'cos', or:'|' };
+            const expr = (op === 'sin' || op === 'cos') ? `${opSymbols[op]}(${a})` : `${a} ${opSymbols[op]} ${b}`;
             history.push({ op, a, b, expr, result });
             if (history.length > MAX_HISTORY) history.shift();
             renderHistory();
         }
 
-        // 根据运算类型切换第二个输入框
         function toggleParamB() {
             const op = document.getElementById('operator').value;
             const inputB = document.getElementById('numB');
-            if (op === 'sin') {
+            if (op === 'sin' || op === 'cos') {
                 inputB.classList.add('hidden');
                 inputB.value = '';
                 inputB.removeAttribute('required');
@@ -179,7 +176,6 @@
             }
         }
 
-        // 调用后端 API
         async function callBackend(op, a, b = null) {
             let url = `http://localhost:8080/api/${op}?a=${encodeURIComponent(a)}`;
             if (b !== null && b !== undefined) {
@@ -203,14 +199,13 @@
             const b = inputB.value.trim();
             const op = operator.value;
 
-            // 输入验证
             if (a === '') {
                 resultBox.className = 'result error';
                 statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
                 resultText.textContent = 'Error: 请输入数字 a';
                 return;
             }
-            if (op !== 'sin' && b === '') {
+            if (op !== 'sin' && op !== 'cos' && b === '') {
                 resultBox.className = 'result error';
                 statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
                 resultText.textContent = 'Error: 请输入数字 b';
@@ -218,25 +213,26 @@
             }
 
             const numA = parseFloat(a);
-            const numB = op !== 'sin' ? parseFloat(b) : null;
-            if (isNaN(numA) || (op !== 'sin' && isNaN(numB))) {
+            const numB = (op !== 'sin' && op !== 'cos') ? parseFloat(b) : null;
+            if (isNaN(numA) || ((op !== 'sin' && op !== 'cos') && isNaN(numB))) {
                 resultBox.className = 'result error';
                 statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
                 resultText.textContent = 'Error: 请输入有效的数字';
                 return;
             }
 
-            // 加载状态
             resultBox.className = 'result loading';
             statusIcon.innerHTML = '<span class="status-dot dot-loading"></span>';
             resultText.textContent = '计算中...';
 
             try {
-                const result = op !== 'sin' ? await callBackend(op, numA, numB) : await callBackend(op, numA);
+                const result = (op !== 'sin' && op !== 'cos')
+                    ? await callBackend(op, numA, numB)
+                    : await callBackend(op, numA);
                 resultBox.className = 'result success';
                 statusIcon.innerHTML = '<span class="status-dot dot-success"></span>';
-                const symbol = { add:'+', sub:'−', mul:'×', mod:'%', xor:'⊕', gcd:'gcd', sin:'sin' }[op];
-                const expr = op === 'sin' ? `${symbol}(${numA})` : `${numA} ${symbol} ${numB}`;
+                const symbol = { add:'+', sub:'−', mul:'×', mod:'%', xor:'⊕', gcd:'gcd', sin:'sin', cos:'cos', or:'|'}[op];
+                const expr = (op === 'sin' || op === 'cos') ? `${symbol}(${numA})` : `${numA} ${symbol} ${numB}`;
                 resultText.textContent = `${expr} = ${result}`;
                 addHistory(op, numA, numB, result);
             } catch (error) {
@@ -256,13 +252,11 @@
             document.getElementById('numA').focus();
         }
 
-        // 监听运算符变化
         document.getElementById('operator').addEventListener('change', toggleParamB);
-
-        // 键盘支持
         document.getElementById('numA').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                if (document.getElementById('operator').value !== 'sin') {
+                const op = document.getElementById('operator').value;
+                if (op !== 'sin' && op !== 'cos') {
                     document.getElementById('numB').focus();
                 } else {
                     calculate();
@@ -273,7 +267,6 @@
             if (e.key === 'Enter') calculate();
         });
 
-        // 初始化
         toggleParamB();
         renderHistory();
     </script>
