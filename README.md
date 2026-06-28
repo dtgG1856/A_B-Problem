@@ -2,7 +2,7 @@
 
 ## 项目功能 
 
-支持 + - $\times$ `mod` `xor` `gcd` `sin` 七种运算, 其中 + - $\times$ `mod` `sin` 支持小数运算, `xor` `gcd` 仅支持整数运算, 输入小数将会报错.
+支持 + - $\times$ `mod` `xor` `gcd` `sin` `cos` `or` 九种运算, 其中 + - $\times$ `mod` `sin` `cos` 支持小数运算, `xor` `gcd` `or` 仅支持整数运算, 输入小数将会报错.
 
 支持查看运算历史记录.
 
@@ -12,11 +12,14 @@
 
 2. 确保有 `CMake` 3.10 以上版本;
 
-3. 编译: 在文件夹 cmd 中, 输入:
+3. 编译: 在文件夹 `cmd` 中, 输入:
 
-`mkdir build && cd build
-cmake ..
-make
-./server`
+`mkdir build && cd build`
+
+`cmake ..`
+
+`make`
+
+`./server`
 
 后台不要关闭, 浏览器打开 `www/index.html`, 即可使用.
