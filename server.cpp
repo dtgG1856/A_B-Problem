@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include "httplib.h"
 
 int main() {
@@ -62,6 +63,37 @@ int main() {
                 return;
             }
             long long result = a % b;
+            res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
+        } catch (...) {
+            res.status = 400;
+            res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+        }
+    });
+
+    // 异或
+    svr.Get("/api/xor", [](const httplib::Request& req, httplib::Response& res) {
+        try {
+            long long a = std::stoll(req.get_param_value("a"));
+            long long b = std::stoll(req.get_param_value("b"));
+            long long result = a ^ b;
+            res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
+        } catch (...) {
+            res.status = 400;
+            res.set_content("{\"error\":\"Invalid input\"}", "application/json");
+        }
+    });
+
+    // 最大公因数
+    svr.Get("/api/gcd", [](const httplib::Request& req, httplib::Response& res) {
+        try {
+            long long a = std::stoll(req.get_param_value("a"));
+            long long b = std::stoll(req.get_param_value("b"));
+            if (a == 0 && b == 0) {
+                res.status = 400;
+                res.set_content("{\"error\":\"输入不合法\"}", "application/json");
+                return;
+            }
+            long long result = std::gcd(a,b);
             res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
         } catch (...) {
             res.status = 400;
