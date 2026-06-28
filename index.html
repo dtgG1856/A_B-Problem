@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>多功能计算器 - 在线评测</title>
+    <title>多功能计算器 · 在线API演示</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -15,39 +15,52 @@
         .container {
             background: #161b22; border: 1px solid #30363d;
             border-radius: 12px; padding: 40px;
-            max-width: 500px; width: 100%;
+            max-width: 520px; width: 100%;
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
         }
         h1 { font-size: 28px; margin-bottom: 8px; color: #58a6ff; }
         .subtitle { color: #8b949e; font-size: 14px; margin-bottom: 30px; }
-        .input-row { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
+        .input-row { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
         .input-row input {
-            flex: 1; background: #0d1117; border: 1px solid #30363d;
-            border-radius: 6px; padding: 12px 16px; color: #c9d1d9;
-            font-size: 18px; font-family: 'Consolas', monospace; outline: none;
-            transition: border-color 0.2s;
-        }
-        .input-row input:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88,166,255,0.1); }
-        select {
+            flex: 2; min-width: 120px;
             background: #0d1117; border: 1px solid #30363d;
-            border-radius: 6px; padding: 12px 16px; color: #c9d1d9;
+            border-radius: 8px; padding: 14px 16px; color: #c9d1d9;
             font-size: 18px; font-family: 'Consolas', monospace; outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-row input:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88,166,255,0.15); }
+        .input-row select {
+            flex: 1; min-width: 100px;
+            background: #0d1117; border: 1px solid #30363d;
+            border-radius: 8px; padding: 14px 12px; color: #c9d1d9;
+            font-size: 16px; font-family: 'Consolas', monospace; outline: none;
             cursor: pointer; transition: border-color 0.2s;
+            appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="%238b949e"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px;
         }
         select:focus { border-color: #58a6ff; }
+        #paramB { transition: opacity 0.2s ease, transform 0.2s ease; }
+        .hidden { opacity: 0; transform: scaleX(0); pointer-events: none; position: absolute; }
+        .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
         button {
-            width: 100%; background: #238636; color: white;
-            border: 1px solid #2ea043; border-radius: 6px; padding: 12px;
+            flex: 1; background: #238636; color: white;
+            border: 1px solid #2ea043; border-radius: 8px; padding: 12px;
             font-size: 16px; font-weight: 600; cursor: pointer;
-            transition: background 0.2s; margin-bottom: 20px;
+            transition: background 0.2s, transform 0.1s;
         }
         button:hover { background: #2ea043; }
-        button:active { background: #196c2e; }
+        button:active { transform: scale(0.97); }
+        button.secondary {
+            background: #21262d; border-color: #30363d; color: #c9d1d9;
+        }
+        button.secondary:hover { background: #30363d; }
         .result {
             background: #0d1117; border: 1px solid #30363d;
-            border-radius: 6px; padding: 16px; min-height: 50px;
+            border-radius: 8px; padding: 16px; min-height: 50px;
             font-family: 'Consolas', monospace; font-size: 16px;
-            display: flex; align-items: center;
+            display: flex; align-items: center; margin-bottom: 25px;
+            transition: border-color 0.3s, color 0.3s;
         }
         .result.success { border-color: #238636; color: #7ee787; }
         .result.error   { border-color: #da3633; color: #f85149; }
@@ -56,41 +69,123 @@
         .dot-success { background: #238636; }
         .dot-error   { background: #da3633; }
         .dot-loading { background: #d2991d; animation: pulse 1s infinite; }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .history { margin-top: 10px; }
+        .history h3 { font-size: 16px; color: #8b949e; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .history-list { list-style: none; max-height: 180px; overflow-y: auto; }
+        .history-list li {
+            background: #0d1117; border: 1px solid #30363d; border-radius: 6px;
+            padding: 8px 12px; margin-bottom: 6px; cursor: pointer;
+            font-size: 14px; display: flex; justify-content: space-between;
+            transition: background 0.2s;
         }
+        .history-list li:hover { background: #161b22; border-color: #58a6ff; }
+        .history-expr { color: #c9d1d9; }
+        .history-result { color: #7ee787; font-weight: 600; margin-left: 10px; }
+        .clear-history { font-size: 12px; color: #8b949e; cursor: pointer; margin-left: auto; }
+        .clear-history:hover { color: #f85149; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>多功能计算器</h1>
-        <p class="subtitle">支持加、减、乘、除、取模、异或、最大公因数</p>
+        <p class="subtitle">加·减·乘·取模·异或·最大公因数·正弦</p>
 
         <div class="input-row">
-            <input type="number" id="numA" placeholder="a" autofocus>
+            <input type="number" id="numA" placeholder="数字 a" autofocus>
             <select id="operator">
-                <option value="add">+ (加)</option>
-                <option value="sub">− (减)</option>
-                <option value="mul">× (乘)</option>
-                <option value="mod">% (取模)</option>
-                <option value="xor">⊕ (异或)</option>
-                <option value="gcd">gcd (最大公因数)</option>
+                <option value="add">+ 加法</option>
+                <option value="sub">− 减法</option>
+                <option value="mul">× 乘法</option>
+                <option value="mod">% 取模</option>
+                <option value="xor">⊕ 异或</option>
+                <option value="gcd">gcd 最大公因数</option>
+                <option value="sin">sin 正弦</option>
             </select>
-            <input type="number" id="numB" placeholder="b">
+            <input type="number" id="numB" placeholder="数字 b">
         </div>
 
-        <button onclick="calculate()">提交 (Submit)</button>
+        <div class="button-group">
+            <button onclick="calculate()">提交</button>
+            <button class="secondary" onclick="clearInputs()">清除</button>
+        </div>
 
         <div class="result" id="resultBox">
             <span id="statusIcon"></span>
             <span id="resultText">等待输入...</span>
         </div>
+
+        <div class="history">
+            <h3>历史记录 <span class="clear-history" onclick="clearHistory()">清空</span></h3>
+            <ul class="history-list" id="historyList"></ul>
+        </div>
     </div>
 
     <script>
-        async function callBackend(op, a, b) {
-            const response = await fetch(`http://localhost:8080/api/${op}?a=${a}&b=${b}`);
+        // 历史记录（最多保存10条）
+        const MAX_HISTORY = 10;
+        let history = JSON.parse(localStorage.getItem('calc_history') || '[]');
+
+        // 渲染历史记录
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            list.innerHTML = '';
+            history.slice().reverse().forEach((item, idx) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="history-expr">${item.expr}</span><span class="history-result">= ${item.result}</span>`;
+                li.onclick = () => loadHistoryItem(item);
+                list.appendChild(li);
+            });
+            localStorage.setItem('calc_history', JSON.stringify(history));
+        }
+
+        // 加载历史记录到输入框
+        function loadHistoryItem(item) {
+            document.getElementById('operator').value = item.op;
+            document.getElementById('numA').value = item.a;
+            if (item.b !== undefined && item.b !== null) {
+                document.getElementById('numB').value = item.b;
+            }
+            toggleParamB(); // 根据运算类型调整输入框
+            calculate(); // 自动重新计算
+        }
+
+        function clearHistory() {
+            history = [];
+            localStorage.removeItem('calc_history');
+            renderHistory();
+        }
+
+        // 添加历史
+        function addHistory(op, a, b, result) {
+            const opSymbols = { add:'+', sub:'−', mul:'×', mod:'%', xor:'⊕', gcd:'gcd', sin:'sin' };
+            const expr = op === 'sin' ? `sin(${a})` : `${a} ${opSymbols[op]} ${b}`;
+            history.push({ op, a, b, expr, result });
+            if (history.length > MAX_HISTORY) history.shift();
+            renderHistory();
+        }
+
+        // 根据运算类型切换第二个输入框
+        function toggleParamB() {
+            const op = document.getElementById('operator').value;
+            const inputB = document.getElementById('numB');
+            if (op === 'sin') {
+                inputB.classList.add('hidden');
+                inputB.value = '';
+                inputB.removeAttribute('required');
+            } else {
+                inputB.classList.remove('hidden');
+            }
+        }
+
+        // 调用后端 API
+        async function callBackend(op, a, b = null) {
+            let url = `http://localhost:8080/api/${op}?a=${encodeURIComponent(a)}`;
+            if (b !== null && b !== undefined) {
+                url += `&b=${encodeURIComponent(b)}`;
+            }
+            const response = await fetch(url);
             const data = await response.json();
             if (data.error) throw new Error(data.error);
             return data.result;
@@ -108,48 +203,79 @@
             const b = inputB.value.trim();
             const op = operator.value;
 
-            const opSymbols = { add: '+', sub: '−', mul: '×', mod: '%', xor: '⊕', gcd: 'gcd' };
-            const opSymbol = opSymbols[op];
-
-            if (a === '' || b === '') {
+            // 输入验证
+            if (a === '') {
                 resultBox.className = 'result error';
                 statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
-                resultText.textContent = 'Error: 两个输入框不能为空';
+                resultText.textContent = 'Error: 请输入数字 a';
+                return;
+            }
+            if (op !== 'sin' && b === '') {
+                resultBox.className = 'result error';
+                statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
+                resultText.textContent = 'Error: 请输入数字 b';
                 return;
             }
 
-            const numA = parseInt(a);
-            const numB = parseInt(b);
-
-            if (isNaN(numA) || isNaN(numB)) {
+            const numA = parseFloat(a);
+            const numB = op !== 'sin' ? parseFloat(b) : null;
+            if (isNaN(numA) || (op !== 'sin' && isNaN(numB))) {
                 resultBox.className = 'result error';
                 statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
-                resultText.textContent = 'Error: 请输入有效的整数';
+                resultText.textContent = 'Error: 请输入有效的数字';
                 return;
             }
 
+            // 加载状态
             resultBox.className = 'result loading';
             statusIcon.innerHTML = '<span class="status-dot dot-loading"></span>';
-            resultText.textContent = '评测中...';
+            resultText.textContent = '计算中...';
 
             try {
-                const result = await callBackend(op, numA, numB);
+                const result = op !== 'sin' ? await callBackend(op, numA, numB) : await callBackend(op, numA);
                 resultBox.className = 'result success';
                 statusIcon.innerHTML = '<span class="status-dot dot-success"></span>';
-                resultText.textContent = `Accepted: ${numA} ${opSymbol} ${numB} = ${result}`;
+                const symbol = { add:'+', sub:'−', mul:'×', mod:'%', xor:'⊕', gcd:'gcd', sin:'sin' }[op];
+                const expr = op === 'sin' ? `${symbol}(${numA})` : `${numA} ${symbol} ${numB}`;
+                resultText.textContent = `${expr} = ${result}`;
+                addHistory(op, numA, numB, result);
             } catch (error) {
                 resultBox.className = 'result error';
                 statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
-                resultText.textContent = `Runtime Error: ${error.message}`;
+                resultText.textContent = `Error: ${error.message}`;
             }
         }
 
+        function clearInputs() {
+            document.getElementById('numA').value = '';
+            document.getElementById('numB').value = '';
+            const resultBox = document.getElementById('resultBox');
+            resultBox.className = 'result';
+            document.getElementById('statusIcon').innerHTML = '';
+            document.getElementById('resultText').textContent = '等待输入...';
+            document.getElementById('numA').focus();
+        }
+
+        // 监听运算符变化
+        document.getElementById('operator').addEventListener('change', toggleParamB);
+
+        // 键盘支持
+        document.getElementById('numA').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (document.getElementById('operator').value !== 'sin') {
+                    document.getElementById('numB').focus();
+                } else {
+                    calculate();
+                }
+            }
+        });
         document.getElementById('numB').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') calculate();
         });
-        document.getElementById('numA').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('numB').focus();
-        });
+
+        // 初始化
+        toggleParamB();
+        renderHistory();
     </script>
 </body>
 </html>
