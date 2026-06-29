@@ -10,7 +10,7 @@ std::string limit_double(double num){
 
 bool is_int(const std::string& str){
     double a = std::stod(str);
-    long long c = std::stoll(str);
+    long long c = (long long)a;
     if((double)c == a) return true;
     else return false;
 }
