@@ -2,7 +2,7 @@
 
 ## 项目功能 
 
-支持 + - $\times$ `mod` `xor` `gcd` `sin` `cos` `or` 九种运算, 其中 + - $\times$ `mod` `sin` `cos` 支持小数运算, `xor` `gcd` `or` 仅支持整数运算, 输入小数将会报错.
+支持 + - $\times$ `mod` `xor` `gcd` `sin` `cos` `or` 九种运算, 其中 + - $\times$ `mod` `sin` `cos` 支持小数运算, `xor` `gcd` `or` 仅支持整数运算, 输入小数将会报错.**(2026.7.20 更新: 加法缩小到 int64_t 范围(2^{63}-1 范围且不再支持小数))**
 
 支持查看运算历史记录.
 
