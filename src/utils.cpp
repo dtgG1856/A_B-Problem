@@ -9,8 +9,17 @@ std::string limit_double(double num){
 }
 
 bool is_int(const std::string& str){
-    double a = std::stod(str);
-    long long c = (long long)a;
-    if((double)c == a) return true;
-    else return false;
+    size_t len = str.size();
+    if (!len) return false;
+    size_t i = 0;
+    if (str[i] == '-') {
+        i++;
+        if (len == 1) return false;
+    }
+    for (; i < len; i++) {
+        if (str[i] < '0' || str[i] > '9') {
+            return false;
+        }
+    }
+    return true;
 }
