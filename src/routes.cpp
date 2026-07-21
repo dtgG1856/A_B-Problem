@@ -33,10 +33,20 @@ void register_routes(httplib::Server& svr) {
     // 减法
     svr.Get("/api/sub", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            int64_t a = std::stod(req.get_param_value("a"));
-            double b = std::stod(req.get_param_value("b"));
-            double result = a - b;
-            res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
+            int64_t a = std::stoll(req.get_param_value("a"));
+            int64_t b = std::stoll(req.get_param_value("b"));
+            bool overflow = false;
+            if ((b < 0 && a > std::numeric_limits<int64_t>::max() + b) || 
+                (b > 0 && a < std::numeric_limits<int64_t>::min() + b)) {
+                    overflow = true;
+            }
+            if (overflow) {
+                res.status = 400;
+                res.set_content("{\"error\":\"计算结果溢出\"}", "application/json");
+            } else {
+                int64_t result = a - b;
+                res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
+            }
         } catch (...) {
             res.status = 400;
             res.set_content("{\"error\":\"服务器状态错误\"}", "application/json");
