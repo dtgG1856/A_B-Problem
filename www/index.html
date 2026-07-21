@@ -93,7 +93,7 @@
         <p class="subtitle">加·减·乘·取模·异或·按位或·最大公因数·正弦·余弦</p>
 
         <div class="input-row">
-            <input type="number" id="numA" placeholder="数字 a" autofocus>
+            <input type="text" id="numA" placeholder="数字 a" autofocus>
             <select id="operator">
                 <option value="add">+ 加法</option>
                 <option value="sub">− 减法</option>
@@ -105,7 +105,7 @@
                 <option value="cos">cos 余弦</option>
                 <option value="or">| 按位或</option>
             </select>
-            <input type="number" id="numB" placeholder="数字 b">
+            <input type="text" id="numB" placeholder="数字 b">
         </div>
 
         <div class="button-group">
@@ -157,9 +157,9 @@
         }
 
         function addHistory(op, a, b, result) {
-            const opSymbols = { add:'+', sub:'−', mul:'×', mod:'%', xor:'⊕', gcd:'gcd', sin:'sin', cos:'cos', or:'|' };
+            const opSymbols = { add:'+', sub:'\u2212', mul:'\u00d7', mod:'%', xor:'\u2295', gcd:'gcd', sin:'sin', cos:'cos', or:'|' };
             const expr = (op === 'sin' || op === 'cos') ? `${opSymbols[op]}(${a})` : `${a} ${opSymbols[op]} ${b}`;
-            history.push({ op, a, b, expr, result });
+            history.push({ op, a, b, expr, result: String(result) });
             if (history.length > MAX_HISTORY) history.shift();
             renderHistory();
         }
@@ -176,15 +176,33 @@
             }
         }
 
+        /**
+         * 从 API 响应文本中提取 result 字段的值，以字符串形式返回。
+         * 避免使用 JSON.parse 导致超过 Number.MAX_SAFE_INTEGER 的大整数精度丢失。
+         */
+        function extractResultFromResponse(text) {
+            // 尝试匹配 "result": <数字> 或 "result":<数字>
+            const resultMatch = text.match(/"result"\s*:\s*(-?\d+)/);
+            if (resultMatch) {
+                return resultMatch[1]; // 以字符串形式返回
+            }
+            // 尝试匹配 "error": "<错误信息>"
+            const errorMatch = text.match(/"error"\s*:\s*"([^"]+)"/);
+            if (errorMatch) {
+                throw new Error(errorMatch[1]);
+            }
+            throw new Error('无法解析响应');
+        }
+
         async function callBackend(op, a, b = null) {
             let url = `http://localhost:8080/api/${op}?a=${encodeURIComponent(a)}`;
             if (b !== null && b !== undefined) {
                 url += `&b=${encodeURIComponent(b)}`;
             }
             const response = await fetch(url);
-            const data = await response.json();
-            if (data.error) throw new Error(data.error);
-            return data.result;
+            // 使用 response.text() 获取原始响应文本，避免 JSON.parse 导致大整数精度丢失
+            const text = await response.text();
+            return extractResultFromResponse(text);
         }
 
         async function calculate() {
@@ -199,25 +217,17 @@
             const b = inputB.value.trim();
             const op = operator.value;
 
-            if (a === '') {
+            // 检查输入是否为空（基于字符串长度）
+            if (a.length === 0) {
                 resultBox.className = 'result error';
                 statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
                 resultText.textContent = 'Error: 请输入数字 a';
                 return;
             }
-            if (op !== 'sin' && op !== 'cos' && b === '') {
+            if (op !== 'sin' && op !== 'cos' && b.length === 0) {
                 resultBox.className = 'result error';
                 statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
                 resultText.textContent = 'Error: 请输入数字 b';
-                return;
-            }
-
-            const numA = parseFloat(a);
-            const numB = (op !== 'sin' && op !== 'cos') ? parseFloat(b) : null;
-            if (isNaN(numA) || ((op !== 'sin' && op !== 'cos') && isNaN(numB))) {
-                resultBox.className = 'result error';
-                statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
-                resultText.textContent = 'Error: 请输入有效的数字';
                 return;
             }
 
@@ -226,15 +236,18 @@
             resultText.textContent = '计算中...';
 
             try {
+                // 直接传递原始字符串 a、b，不使用 parseFloat 或 Number() 转换
                 const result = (op !== 'sin' && op !== 'cos')
-                    ? await callBackend(op, numA, numB)
-                    : await callBackend(op, numA);
+                    ? await callBackend(op, a, b)
+                    : await callBackend(op, a);
+
                 resultBox.className = 'result success';
                 statusIcon.innerHTML = '<span class="status-dot dot-success"></span>';
-                const symbol = { add:'+', sub:'−', mul:'×', mod:'%', xor:'⊕', gcd:'gcd', sin:'sin', cos:'cos', or:'|'}[op];
-                const expr = (op === 'sin' || op === 'cos') ? `${symbol}(${numA})` : `${numA} ${symbol} ${numB}`;
+                const symbol = { add:'+', sub:'\u2212', mul:'\u00d7', mod:'%', xor:'\u2295', gcd:'gcd', sin:'sin', cos:'cos', or:'|'}[op];
+                const expr = (op === 'sin' || op === 'cos') ? `${symbol}(${a})` : `${a} ${symbol} ${b}`;
                 resultText.textContent = `${expr} = ${result}`;
-                addHistory(op, numA, numB, result);
+                // 历史记录中 result 以字符串形式存储
+                addHistory(op, a, b, result);
             } catch (error) {
                 resultBox.className = 'result error';
                 statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
