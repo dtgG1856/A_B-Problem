@@ -180,11 +180,11 @@
          * 从 API 响应文本中提取 result 字段的值，以字符串形式返回。
          * 避免使用 JSON.parse 导致超过 Number.MAX_SAFE_INTEGER 的大整数精度丢失。
          */
-        function extractResultFromResponse(text) {
-            // 尝试匹配 "result": <数字> 或 "result":<数字>
-            const resultMatch = text.match(/"result"\s*:\s*(-?\d+)/);
+         function extractResultFromResponse(text) {
+            // 匹配 "result": <数字>，数字可以是整数或小数（如 0.500000、-3.141592）
+            const resultMatch = text.match(/"result"\s*:\s*(-?\d+(?:\.\d+)?)/);
             if (resultMatch) {
-                return resultMatch[1]; // 以字符串形式返回
+                return resultMatch[1]; // 以字符串形式返回，保留完整精度
             }
             // 尝试匹配 "error": "<错误信息>"
             const errorMatch = text.match(/"error"\s*:\s*"([^"]+)"/);
@@ -231,13 +231,31 @@
                 return;
             }
 
+            // 前端长度检查：对于 + - * OR XOR GCD %，字符串长度不得 >= 21
+            // 对于 sin cos，字符串长度不得 >= 18
+            const isBinaryOp = (op !== 'sin' && op !== 'cos');
+            const maxLen = isBinaryOp ? 20 : 17;
+            // 注意负号也算一个字符，长度限制与后端 is_int()/is_double() 保持一致
+            if (a.length > maxLen) {
+                resultBox.className = 'result error';
+                statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
+                resultText.textContent = 'Error: 您输入的数字过大';
+                return;
+            }
+            if (isBinaryOp && b.length > maxLen) {
+                resultBox.className = 'result error';
+                statusIcon.innerHTML = '<span class="status-dot dot-error"></span>';
+                resultText.textContent = 'Error: 您输入的数字过大';
+                return;
+            }
+
             resultBox.className = 'result loading';
             statusIcon.innerHTML = '<span class="status-dot dot-loading"></span>';
             resultText.textContent = '计算中...';
 
             try {
                 // 直接传递原始字符串 a、b，不使用 parseFloat 或 Number() 转换
-                const result = (op !== 'sin' && op !== 'cos')
+                const result = isBinaryOp
                     ? await callBackend(op, a, b)
                     : await callBackend(op, a);
 

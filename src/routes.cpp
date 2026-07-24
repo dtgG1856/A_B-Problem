@@ -15,7 +15,7 @@ void register_routes(httplib::Server& svr) {
             std::string numB = req.get_param_value("b");
             if (!is_int(numA) || !is_int(numB)) {
                 res.status = 400;
-                res.set_content("{\"error\":\"您输入的数字不是整数\"}", "application/json");
+                res.set_content("{\"error\":\"您输入的数字不是整数或数字过大\"}", "application/json");
                 return;
             }
             int64_t a = std::stoll(numA);
@@ -48,7 +48,7 @@ void register_routes(httplib::Server& svr) {
             std::string numB = req.get_param_value("b");
             if (!is_int(numA) || !is_int(numB)) {
                 res.status = 400;
-                res.set_content("{\"error\":\"您输入的数字不是整数\"}", "application/json");
+                res.set_content("{\"error\":\"您输入的数字不是整数或数字过大\"}", "application/json");
                 return;
             }
             int64_t a = std::stoll(numA);
@@ -81,7 +81,7 @@ void register_routes(httplib::Server& svr) {
             std::string numB = req.get_param_value("b");
             if (!is_int(numA) || !is_int(numB)) {
                 res.status = 400;
-                res.set_content("{\"error\":\"您输入的数字不是整数\"}", "application/json");
+                res.set_content("{\"error\":\"您输入的数字不是整数或数字过大\"}", "application/json");
                 return;
             }
             int64_t a = std::stoll(numA);
@@ -120,7 +120,7 @@ void register_routes(httplib::Server& svr) {
             std::string str_b = req.get_param_value("b");
             if (!is_int(str_a) || !is_int(str_b)) {
                 res.status = 400;
-                res.set_content("{\"error\":\"您输入的数字不是整数\"}", "application/json");
+                res.set_content("{\"error\":\"您输入的数字不是整数或数字过大\"}", "application/json");
                 return;
             }
             int64_t a = std::stoll(str_a);
@@ -153,7 +153,7 @@ void register_routes(httplib::Server& svr) {
             std::string str_b = req.get_param_value("b");
             if (!is_int(str_a) || !is_int(str_b)) {
                 res.status = 400;
-                res.set_content("{\"error\":\"您输入的数字不是整数\"}", "application/json");
+                res.set_content("{\"error\":\"您输入的数字不是整数或数字过大\"}", "application/json");
                 return;
             }
             int64_t a = std::stoll(str_a);
@@ -176,7 +176,7 @@ void register_routes(httplib::Server& svr) {
             std::string str_b = req.get_param_value("b");
             if (!is_int(str_a) || !is_int(str_b)) {
                 res.status = 400;
-                res.set_content("{\"error\":\"您输入的数字不是整数\"}", "application/json");
+                res.set_content("{\"error\":\"您输入的数字不是整数或数字过大\"}", "application/json");
                 return;
             }
             int64_t a = std::stoll(str_a);
@@ -204,7 +204,7 @@ void register_routes(httplib::Server& svr) {
             std::string str_b = req.get_param_value("b");
             if (!is_int(str_a) || !is_int(str_b)) {
                 res.status = 400;
-                res.set_content("{\"error\":\"您输入的数字不是整数\"}", "application/json");
+                res.set_content("{\"error\":\"您输入的数字不是整数或数字过大\"}", "application/json");
                 return;
             }
             int64_t a = std::stoll(str_a);
@@ -223,7 +223,13 @@ void register_routes(httplib::Server& svr) {
     //正弦函数
     svr.Get("/api/sin", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            double a = std::stod(req.get_param_value("a"));
+            std::string str = req.get_param_value("a");
+            if (!is_double(str)) {
+                res.status = 400;
+                res.set_content("{\"error\":\"您输入的数字不是实数或超过 16 位数字\"}", "application/json");
+                return;
+            }
+            double a = std::stod(str);
             double result = std::sin(a);
             res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
         } catch (...) {
@@ -235,7 +241,13 @@ void register_routes(httplib::Server& svr) {
     //余弦函数
     svr.Get("/api/cos", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            double a = std::stod(req.get_param_value("a"));
+            std::string str = req.get_param_value("a");
+            if (!is_double(str)) {
+                res.status = 400;
+                res.set_content("{\"error\":\"您输入的数字不是实数或超过 16 位数字\"}", "application/json");
+                return;
+            }
+            double a = std::stod(str);
             double result = std::cos(a);
             res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
         } catch (...) {
