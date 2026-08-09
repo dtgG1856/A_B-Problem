@@ -10,6 +10,10 @@ add_executable(server
     src/routes.cpp
 )
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_link_options(server PRIVATE -static-libgcc -static-libstdc++)
+endif()
+
 target_include_directories(server PRIVATE
     include
     lib

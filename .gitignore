@@ -2,3 +2,5 @@ server.exe
 server
 build/
 *.o
+*.tar.gz
+release_package/
