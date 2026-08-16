@@ -9,32 +9,36 @@
         body {
             font-family: 'Segoe UI', 'Consolas', monospace;
             background: #0d1117; color: #c9d1d9;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; padding: 20px;
+            display: flex; justify-content: center;             align-items: center;
+            height: 100vh; padding: 40px 30px;
+        }
+        .page {
+            display: flex; gap: 30px; align-items: flex-start;
+            width: 100%; max-width: 1100px;
         }
         .container {
             background: #161b22; border: 1px solid #30363d;
-            border-radius: 12px; padding: 40px;
-            max-width: 520px; width: 100%;
+            border-radius: 12px; padding: 45px;
+            max-width: 640px; width: 100%;
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
         }
-        h1 { font-size: 28px; margin-bottom: 8px; color: #58a6ff; }
-        .subtitle { color: #8b949e; font-size: 14px; margin-bottom: 30px; }
+        h1 { font-size: 30px; margin-bottom: 8px; color: #58a6ff; }
+        .subtitle { color: #8b949e; font-size: 15px; margin-bottom: 30px; }
         .input-row { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
         .input-row input {
-            flex: 2; min-width: 120px;
+            flex: 2; min-width: 150px;
             background: #0d1117; border: 1px solid #30363d;
-            border-radius: 8px; padding: 14px 16px; color: #c9d1d9;
-            font-size: 18px; font-family: 'Consolas', monospace; outline: none;
+            border-radius: 8px; padding: 16px 18px; color: #c9d1d9;
+            font-size: 20px; font-family: 'Consolas', monospace; outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         .input-row input:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88,166,255,0.15); }
         .input-row select {
-            flex: 1; min-width: 100px;
+            flex: 1; min-width: 120px;
             background: #0d1117; border: 1px solid #30363d;
-            border-radius: 8px; padding: 14px 12px; color: #c9d1d9;
-            font-size: 16px; font-family: 'Consolas', monospace; outline: none;
+            border-radius: 8px; padding: 16px 12px; color: #c9d1d9;
+            font-size: 17px; font-family: 'Consolas', monospace; outline: none;
             cursor: pointer; transition: border-color 0.2s;
             appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="%238b949e"><path d="M7 10l5 5 5-5z"/></svg>');
             background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px;
@@ -45,8 +49,8 @@
         .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
         button {
             flex: 1; background: #238636; color: white;
-            border: 1px solid #2ea043; border-radius: 8px; padding: 12px;
-            font-size: 16px; font-weight: 600; cursor: pointer;
+            border: 1px solid #2ea043; border-radius: 8px; padding: 14px;
+            font-size: 17px; font-weight: 600; cursor: pointer;
             transition: background 0.2s, transform 0.1s;
         }
         button:hover { background: #2ea043; }
@@ -57,8 +61,8 @@
         button.secondary:hover { background: #30363d; }
         .result {
             background: #0d1117; border: 1px solid #30363d;
-            border-radius: 8px; padding: 16px; min-height: 50px;
-            font-family: 'Consolas', monospace; font-size: 16px;
+            border-radius: 8px; padding: 18px; min-height: 55px;
+            font-family: 'Consolas', monospace; font-size: 17px;
             display: flex; align-items: center; margin-bottom: 25px;
             transition: border-color 0.3s, color 0.3s;
         }
@@ -72,12 +76,12 @@
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         .history { margin-top: 10px; }
-        .history h3 { font-size: 16px; color: #8b949e; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .history h3 { font-size: 17px; color: #8b949e; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
         .history-list { list-style: none; max-height: 180px; overflow-y: auto; }
         .history-list li {
             background: #0d1117; border: 1px solid #30363d; border-radius: 6px;
-            padding: 8px 12px; margin-bottom: 6px; cursor: pointer;
-            font-size: 14px; display: flex; justify-content: space-between;
+            padding: 9px 12px; margin-bottom: 6px; cursor: pointer;
+            font-size: 15px; display: flex; justify-content: space-between;
             transition: background 0.2s;
         }
         .history-list li:hover { background: #161b22; border-color: #58a6ff; }
@@ -85,42 +89,81 @@
         .history-result { color: #7ee787; font-weight: 600; margin-left: 10px; }
         .clear-history { font-size: 12px; color: #8b949e; cursor: pointer; margin-left: auto; }
         .clear-history:hover { color: #f85149; }
+
+        /* 右侧信息框 */
+        .info-box {
+            background: #161b22; border: 1px solid #30363d;
+            border-radius: 12px; padding: 28px;
+            max-width: 380px; width: 100%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .info-box h2 {
+            font-size: 22px; color: #58a6ff;
+            margin-bottom: 18px; padding-bottom: 10px;
+            border-bottom: 1px solid #30363d;
+        }
+        .info-box ol {
+            list-style: decimal; padding-left: 20px;
+            color: #c9d1d9; font-size: 15px; line-height: 1.8;
+        }
+        .info-box ol li { margin-bottom: 12px; }
+        .info-box code {
+            background: #0d1117; border: 1px solid #30363d;
+            border-radius: 4px; padding: 1px 5px;
+            font-family: 'Consolas', monospace; color: #58a6ff; font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .page { flex-direction: column; align-items: center; }
+            .info-box { max-width: 640px; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>多功能计算器</h1>
-        <p class="subtitle">加·减·乘·取模·异或·按位或·最大公因数·正弦·余弦</p>
+    <div class="page">
+        <div class="container">
+            <h1>多功能计算器</h1>
+            <p class="subtitle">加·减·乘·取模·异或·按位或·最大公因数·正弦·余弦</p>
 
-        <div class="input-row">
-            <input type="text" id="numA" placeholder="数字 a" autofocus>
-            <select id="operator">
-                <option value="add">+ 加法</option>
-                <option value="sub">− 减法</option>
-                <option value="mul">× 乘法</option>
-                <option value="mod">% 取模</option>
-                <option value="xor">⊕ 异或</option>
-                <option value="gcd">gcd 最大公因数</option>
-                <option value="sin">sin 正弦</option>
-                <option value="cos">cos 余弦</option>
-                <option value="or">| 按位或</option>
-            </select>
-            <input type="text" id="numB" placeholder="数字 b">
+            <div class="input-row">
+                <input type="text" id="numA" placeholder="数字 a" autofocus>
+                <select id="operator">
+                    <option value="add">+ 加法</option>
+                    <option value="sub">− 减法</option>
+                    <option value="mul">× 乘法</option>
+                    <option value="mod">% 取模</option>
+                    <option value="xor">⊕ 异或</option>
+                    <option value="gcd">gcd 最大公因数</option>
+                    <option value="sin">sin 正弦</option>
+                    <option value="cos">cos 余弦</option>
+                    <option value="or">| 按位或</option>
+                </select>
+                <input type="text" id="numB" placeholder="数字 b">
+            </div>
+
+            <div class="button-group">
+                <button onclick="calculate()">提交</button>
+                <button class="secondary" onclick="clearInputs()">清除</button>
+            </div>
+
+            <div class="result" id="resultBox">
+                <span id="statusIcon"></span>
+                <span id="resultText">等待输入...</span>
+            </div>
+
+            <div class="history">
+                <h3>历史记录 <span class="clear-history" onclick="clearHistory()">清空</span></h3>
+                <ul class="history-list" id="historyList"></ul>
+            </div>
         </div>
 
-        <div class="button-group">
-            <button onclick="calculate()">提交</button>
-            <button class="secondary" onclick="clearInputs()">清除</button>
-        </div>
-
-        <div class="result" id="resultBox">
-            <span id="statusIcon"></span>
-            <span id="resultText">等待输入...</span>
-        </div>
-
-        <div class="history">
-            <h3>历史记录 <span class="clear-history" onclick="clearHistory()">清空</span></h3>
-            <ul class="history-list" id="historyList"></ul>
+        <div class="info-box">
+            <h2>📋 计算器限制</h2>
+            <ol>
+                <li>对于<strong>加法、减法、乘法、取模、按位或、按位与、按位异或</strong>运算，仅支持<strong>整数</strong>且运算范围为 <code>int64_t</code> 可以正确表示的数字区间（即 <code>-9,223,372,036,854,775,808</code> ~ <code>9,223,372,036,854,775,807</code> 之间），且包括前导 0 在内，数字位数不得超过 <strong>19 位</strong>，否则会报错。</li>
+                <li>对于<strong>正弦、余弦</strong>运算，支持<strong>实数</strong>运算，但包括前导 0 在内，数字位数不得超过 <strong>16 位</strong>，否则会报错。</li>
+                <li>对于用户输入的任意数字，<strong>不支持用科学计数法表示的数字</strong>进行计算，输入任意非数字字符将会直接报错。</li>
+            </ol>
         </div>
     </div>
 
@@ -180,7 +223,7 @@
          * 从 API 响应文本中提取 result 字段的值，以字符串形式返回。
          * 避免使用 JSON.parse 导致超过 Number.MAX_SAFE_INTEGER 的大整数精度丢失。
          */
-         function extractResultFromResponse(text) {
+        function extractResultFromResponse(text) {
             // 匹配 "result": <数字>，数字可以是整数或小数（如 0.500000、-3.141592）
             const resultMatch = text.match(/"result"\s*:\s*(-?\d+(?:\.\d+)?)/);
             if (resultMatch) {
