@@ -9,7 +9,7 @@ std::string limit_double(double num) {
 }
 
 bool is_int(const std::string& str) {
-    size_t len = str.size();
+    const size_t len = str.size();
     if (!len) return false;
     size_t i = 0;
     if (str[i] == '-') {
@@ -28,7 +28,7 @@ bool is_int(const std::string& str) {
 }
 
 bool is_double(const std::string& str) {
-    size_t len = str.size();
+    const size_t len = str.size();
     if (!len) return false;
     size_t i = 0;
     if (str[i] == '-') {

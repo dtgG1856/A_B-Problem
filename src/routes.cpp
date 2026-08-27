@@ -11,15 +11,15 @@ void register_routes(httplib::Server& svr) {
     // 加法
     svr.Get("/api/add", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            std::string numA = req.get_param_value("a");
-            std::string numB = req.get_param_value("b");
+            const std::string numA = req.get_param_value("a");
+            const std::string numB = req.get_param_value("b");
             if (!is_int(numA) || !is_int(numB)) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不满足要求\"}", "application/json");
                 return;
             }
-            int64_t a = std::stoll(numA);
-            int64_t b = std::stoll(numB);
+            const int64_t a = std::stoll(numA);
+            const int64_t b = std::stoll(numB);
             bool overflow = false;
             if ((b > 0 && a > std::numeric_limits<int64_t>::max() - b) ||
                 (b < 0 && a < std::numeric_limits<int64_t>::min() - b)) {
@@ -29,7 +29,7 @@ void register_routes(httplib::Server& svr) {
                 res.status = 400;
                 res.set_content("{\"error\":\"计算结果溢出\"}", "application/json");
             } else {
-                int64_t result = a + b;
+                const int64_t result = a + b;
                 res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
             }
         } catch (const std::out_of_range& e) {
@@ -44,15 +44,15 @@ void register_routes(httplib::Server& svr) {
     // 减法
     svr.Get("/api/sub", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            std::string numA = req.get_param_value("a");
-            std::string numB = req.get_param_value("b");
+            const std::string numA = req.get_param_value("a");
+            const std::string numB = req.get_param_value("b");
             if (!is_int(numA) || !is_int(numB)) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不满足要求\"}", "application/json");
                 return;
             }
-            int64_t a = std::stoll(numA);
-            int64_t b = std::stoll(numB);
+            const int64_t a = std::stoll(numA);
+            const int64_t b = std::stoll(numB);
             bool overflow = false;
             if ((b < 0 && a > std::numeric_limits<int64_t>::max() + b) || 
                 (b > 0 && a < std::numeric_limits<int64_t>::min() + b)) {
@@ -62,7 +62,7 @@ void register_routes(httplib::Server& svr) {
                 res.status = 400;
                 res.set_content("{\"error\":\"计算结果溢出\"}", "application/json");
             } else {
-                int64_t result = a - b;
+                const int64_t result = a - b;
                 res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
             }
         } catch (const std::out_of_range& e) {
@@ -77,8 +77,8 @@ void register_routes(httplib::Server& svr) {
     // 乘法
     svr.Get("/api/mul", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            std::string numA = req.get_param_value("a");
-            std::string numB = req.get_param_value("b");
+            const std::string numA = req.get_param_value("a");
+            const std::string numB = req.get_param_value("b");
             if (!is_int(numA) || !is_int(numB)) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不满足要求\"}", "application/json");
@@ -101,7 +101,7 @@ void register_routes(httplib::Server& svr) {
                 res.status = 400;
                 res.set_content("{\"error\":\"计算结果溢出\"}", "application/json");
             } else {
-                int64_t result = a * b;
+                const int64_t result = a * b;
                 res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
             }
         } catch (const std::out_of_range& e) {
@@ -116,15 +116,15 @@ void register_routes(httplib::Server& svr) {
     // 取模
     svr.Get("/api/mod", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            std::string str_a = req.get_param_value("a");
-            std::string str_b = req.get_param_value("b");
+            const std::string str_a = req.get_param_value("a");
+            const std::string str_b = req.get_param_value("b");
             if (!is_int(str_a) || !is_int(str_b)) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不满足要求\"}", "application/json");
                 return;
             }
-            int64_t a = std::stoll(str_a);
-            int64_t b = std::stoll(str_b);
+            const int64_t a = std::stoll(str_a);
+            const int64_t b = std::stoll(str_b);
             if (b == 0) {
                 res.status = 400;
                 res.set_content("{\"error\":\"模数不能为 0\"}", "application/json");
@@ -135,7 +135,7 @@ void register_routes(httplib::Server& svr) {
                 res.set_content("{\"error\":\"计算结果溢出\"}", "application/json");
                 return;
             }
-            int64_t result = a % b;
+            const int64_t result = a % b;
             res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
         } catch (const std::out_of_range& e) {
             res.status = 400;
@@ -149,16 +149,16 @@ void register_routes(httplib::Server& svr) {
     // 异或
     svr.Get("/api/xor", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            std::string str_a = req.get_param_value("a");
-            std::string str_b = req.get_param_value("b");
+            const std::string str_a = req.get_param_value("a");
+            const std::string str_b = req.get_param_value("b");
             if (!is_int(str_a) || !is_int(str_b)) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不满足要求\"}", "application/json");
                 return;
             }
-            int64_t a = std::stoll(str_a);
-            int64_t b = std::stoll(str_b);
-            int64_t result = a ^ b;
+            const int64_t a = std::stoll(str_a);
+            const int64_t b = std::stoll(str_b);
+            const int64_t result = a ^ b;
             res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
         } catch (const std::out_of_range& e) {
             res.status = 400;
@@ -172,21 +172,21 @@ void register_routes(httplib::Server& svr) {
     // 最大公因数
     svr.Get("/api/gcd", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            std::string str_a = req.get_param_value("a");
-            std::string str_b = req.get_param_value("b");
+            const std::string str_a = req.get_param_value("a");
+            const std::string str_b = req.get_param_value("b");
             if (!is_int(str_a) || !is_int(str_b)) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不满足要求\"}", "application/json");
                 return;
             }
-            int64_t a = std::stoll(str_a);
-            int64_t b = std::stoll(str_b);
+            const int64_t a = std::stoll(str_a);
+            const int64_t b = std::stoll(str_b);
             if (a == 0 && b == 0) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不合法\"}", "application/json");
                 return;
             }
-            int64_t result = std::gcd(a, b);
+            const int64_t result = std::gcd(a, b);
             res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
         } catch (const std::out_of_range& e) {
             res.status = 400;
@@ -200,16 +200,16 @@ void register_routes(httplib::Server& svr) {
     // 或运算
     svr.Get("/api/or", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            std::string str_a = req.get_param_value("a");
-            std::string str_b = req.get_param_value("b");
+            const std::string str_a = req.get_param_value("a");
+            const std::string str_b = req.get_param_value("b");
             if (!is_int(str_a) || !is_int(str_b)) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不满足要求\"}", "application/json");
                 return;
             }
-            int64_t a = std::stoll(str_a);
-            int64_t b = std::stoll(str_b);
-            int64_t result = a | b;
+            const int64_t a = std::stoll(str_a);
+            const int64_t b = std::stoll(str_b);
+            const int64_t result = a | b;
             res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
         } catch (const std::out_of_range& e) {
             res.status = 400;
@@ -223,14 +223,14 @@ void register_routes(httplib::Server& svr) {
     //正弦函数
     svr.Get("/api/sin", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            std::string str = req.get_param_value("a");
+            const std::string str = req.get_param_value("a");
             if (!is_double(str)) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不满足要求\"}", "application/json");
                 return;
             }
-            double a = std::stod(str);
-            double result = std::sin(a);
+            const double a = std::stod(str);
+            const double result = std::sin(a);
             res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
         } catch (...) {
             res.status = 400;
@@ -241,14 +241,14 @@ void register_routes(httplib::Server& svr) {
     //余弦函数
     svr.Get("/api/cos", [](const httplib::Request& req, httplib::Response& res) {
         try {
-            std::string str = req.get_param_value("a");
+            const std::string str = req.get_param_value("a");
             if (!is_double(str)) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不满足要求\"}", "application/json");
                 return;
             }
-            double a = std::stod(str);
-            double result = std::cos(a);
+            const double a = std::stod(str);
+            const double result = std::cos(a);
             res.set_content("{\"result\":" + limit_double(result) + "}", "application/json");
         } catch (...) {
             res.status = 400;
