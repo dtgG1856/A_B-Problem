@@ -187,8 +187,8 @@ void register_routes(httplib::Server& svr) {
                 res.set_content("{\"error\":\"您输入的数字不合法\"}", "application/json");
                 return;
             }
-            if (a > b) std::swap(a, b);
-            if (a == INT64_MIN && b == 0) {
+            if ((a == INT64_MIN && b == 0) ||
+                (a == 0 || b == INT64_MIN)) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不合法\"}", "application/json");
                 return;
