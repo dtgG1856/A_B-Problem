@@ -181,7 +181,7 @@ void register_routes(httplib::Server& svr) {
             }
             const int64_t a = std::stoll(str_a);
             const int64_t b = std::stoll(str_b);
-            if (a == 0 && b == 0) {
+            if ((a == 0 && b == 0) || a == INT64_MIN || b == INT64_MIN) {
                 res.status = 400;
                 res.set_content("{\"error\":\"您输入的数字不合法\"}", "application/json");
                 return;

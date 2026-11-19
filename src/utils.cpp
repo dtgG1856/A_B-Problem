@@ -46,5 +46,6 @@ bool is_double(const std::string& str) {
         } else numcnt++;
         if(numcnt >= 17) return false;
     }
+    if(numcnt == 0) return false;
     return true;
 }

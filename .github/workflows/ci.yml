@@ -1,0 +1,13 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: configure
+        run: cmake -B build -DCMAKE_CXX_FLAGS="-Wall -Wextra -fsanitize=undefined -fno-sanitize-recover=all"
+      - name: build
+        run: cmake --build build -j
+      - name: smoke
+        run: sh test/smoke.sh ./build/server
