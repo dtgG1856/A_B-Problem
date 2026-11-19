@@ -1,6 +1,7 @@
 #include "utils.h"
 #include <sstream>
 #include <iomanip>
+#include <cstdint>
 
 std::string limit_double(double num) {
     std::ostringstream oss;

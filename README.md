@@ -10,20 +10,31 @@
 
 ## 使用方法
 
-0. 也许可以使用 `release`, 但并不会随时更新.
+~~0. 也许可以使用 `release`, 但并不会随时更新.~~
+   
+1. 确保有 `CMake` 3.10+ && 能够运行 `C++17` 的编译器;
 
-~~1. 直接打包这个项目中的所有文件;~~
+2. `git clone https://github.com/dtgG1856/A_B-Problem.git`, `cd A_B-Problem`;
 
-~~2. 确保有 `CMake` 3.10 以上版本;~~
+3. 构建:
+   i. Windows: 在文件夹的 `cmd` 中, 输入:
 
-~~3. 编译: 在文件夹的 `cmd` 中, 输入:~~
+    `mkdir build`
 
-~~`mkdir build && cd build`~~
+    `cmake -B build`
 
-~~`cmake ..`~~
+    `cmake --build build`
 
-~~`make`~~
+    `build\server.exe`
 
-~~`./server`~~
+    ii. Linux: 在文件夹终端中，输入：
 
-~~后台不要关闭, 浏览器打开 `www/index.html`, 即可使用.~~
+    `mkdir build`
+
+    `cmake -B build`
+
+    `cmake --build build`
+
+    `./build/server`
+
+后台不要关闭, 浏览器打开 `www/index.html`, 即可使用.

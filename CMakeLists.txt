@@ -10,6 +10,11 @@ add_executable(server
     src/routes.cpp
 )
 
+if(WIN32)
+    target_compile_definitions(server PRIVATE _WIN32_WINNT=0x0A00)
+    target_link_libraries(server PRIVATE ws2_32)
+endif()
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_link_options(server PRIVATE -static-libgcc -static-libstdc++)
 endif()
@@ -20,4 +25,4 @@ target_include_directories(server PRIVATE
 )
 
 find_package(Threads REQUIRED)
-target_link_libraries(server Threads::Threads)
+target_link_libraries(server PRIVATE Threads::Threads)
