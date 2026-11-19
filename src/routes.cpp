@@ -187,13 +187,14 @@ void register_routes(httplib::Server& svr) {
                 res.set_content("{\"error\":\"您输入的数字不合法\"}", "application/json");
                 return;
             }
-            if ((a == INT64_MIN && b == 0) ||
-                (a == 0 || b == INT64_MIN)) {
+            const uint64_t ua = (a >= 0 ? (uint64_t)a : (uint64_t)0 - a);
+            const uint64_t ub = (b >= 0 ? (uint64_t)b : (uint64_t)0 - b);
+            const uint64_t result = std::gcd(ua, ub);
+            if (result == ((uint64_t)1 << 63)) {
                 res.status = 400;
-                res.set_content("{\"error\":\"您输入的数字不合法\"}", "application/json");
+                res.set_content("{\"error\":\"计算结果溢出\"}", "application/json");
                 return;
             }
-            const int64_t result = std::gcd(a, b);
             res.set_content("{\"result\":" + std::to_string(result) + "}", "application/json");
         } catch (const std::out_of_range& e) {
             res.status = 400;
