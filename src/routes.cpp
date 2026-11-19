@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <limits>
 #include <stdexcept>
+#include <numeric>
 
 void register_routes(httplib::Server& svr) {
     // 加法
