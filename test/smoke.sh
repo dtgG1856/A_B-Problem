@@ -50,10 +50,12 @@ chk  '{"result":6}'         "$B/api/gcd?a=12&b=18"
 chk  '{"result":-0.479426}' "$B/api/sin?a=-.5"
 chk  '{"result":998244353}' "$B/api/sub?a=998244354&b=1"
 chk  '{"result":1856}'      "$B/api/mul?a=2&b=928"
-chk  '{"result":1}' "$B/api/gcd?a=-9223372036854775808&b=1"
+chk  '{"result":1}'         "$B/api/gcd?a=-9223372036854775808&b=1"
 chk  '{"result":1}'         "$B/api/gcd?a=3&b=-9223372036854775808"
 chk  '{"result":4}'         "$B/api/gcd?a=4&b=-9223372036854775808"
-chk  '{"result":5}'  "$B/api/gcd?a=5&b=0"
+chk  '{"result":5}'         "$B/api/gcd?a=5&b=0"
+chk  '{"result":2}'         "$B/api/mod?a=6&b=4"
+chk  '{"result":7}'         "$B/api/xor?a=3&b=4"
 
 code 400 "$B/api/add?a=9223372036854775807&b=1"
 code 400 "$B/api/gcd?a=0&b=0"
@@ -65,6 +67,7 @@ code 400 "$B/api/gcd?a=-0&b=9223372036854775808"
 code 400 "$B/api/gcd?a=0&b=-9223372036854775808"
 code 400 "$B/api/gcd?a=-9223372036854775808&b=0"
 code 400 "$B/api/gcd?a=-9223372036854775808&b=-9223372036854775808"
+code 400 "$B/api/mod?a=12344556&b=0"
 
 # ── 3. 汇总 ──
 if [ "$fail" -ne 0 ]; then
