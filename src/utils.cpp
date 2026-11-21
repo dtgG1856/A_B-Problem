@@ -39,7 +39,7 @@ bool is_double(const std::string& str) {
     bool flag = false;
     int16_t numcnt = 0;
     for (; i < len; i++) {
-        if (!std::isdigit(str[i])) {
+        if (str[i] < '0' || str[i] > '9') {
             if (str[i] != '.' || flag) {
                 return false;
             }
